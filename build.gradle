@@ -1,0 +1,24 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+version = '1.0.1'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("${projectDir}/local-repo")
+    }
+}
+
+dependencies {
+    compileOnly 'com.hypixel.hytale:HytaleServer-parent:1.0-SNAPSHOT'
+}
+
+jar {
+    archiveBaseName = 'RecycleMaterials'
+}
