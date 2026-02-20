@@ -65,32 +65,32 @@ public class RecycleMaterialsRecipesLoaded {
         // Rock_Chalk_Brick
         recipes.add(generateRecipe("Rock_Chalk", null, 1,
                 "Rock_Chalk_Brick", 1, "Bricks"));
+        recipes.add(generateRecipe("Rock_Chalk_Brick_Decorative", null, 1,
+                "Rock_Chalk_Brick", 1, "Bricks"));
         recipes.add(generateRecipe("Rock_Chalk", null, 1,
+                "Rock_Chalk_Brick_Decorative", 1, "Bricks"));
+        recipes.add(generateRecipe("Rock_Chalk_Brick", null, 1,
                 "Rock_Chalk_Brick_Decorative", 1, "Bricks"));
         recipes.add(generateRecipe(null, "Rock_Chalk", 1,
                 "Rock_Chalk_Brick_Stairs", 1, "Stairs"));
         recipes.add(generateRecipe(null, "Rock_Chalk_Brick", 1,
                 "Rock_Chalk_Brick_Stairs", 1, "Stairs"));
+        recipes.add(generateRecipe(null, "Rock_Chalk_Brick_Decorative", 1,
+                "Rock_Chalk_Brick_Stairs", 1, "Stairs"));
         recipes.add(generateRecipe(null, "Rock_Chalk", 1,
-                "Rock_Chalk_Brick_Half", 2, "HalfSlabs"));
-        recipes.add(generateRecipe(null, "Rock_Chalk_Brick", 1,
                 "Rock_Chalk_Brick_Half", 2, "HalfSlabs"));
         recipes.add(generateRecipe(null, "Rock_Chalk", 1,
                 "Rock_Chalk_Brick_Beam", 2, "Beam"));
         recipes.add(generateRecipe(null, "Rock_Chalk_Brick", 1,
                 "Rock_Chalk_Brick_Beam", 2, "Beam"));
+        recipes.add(generateRecipe(null, "Rock_Chalk_Brick_Decorative", 1,
+                "Rock_Chalk_Brick_Beam", 2, "Beam"));
         recipes.add(generateRecipe(null, "Rock_Chalk", 1,
                 "Rock_Chalk_Brick_Pillar_Base", 1, "Pillar"));
-        recipes.add(generateRecipe(null, "Rock_Chalk_Brick", 1,
-                "Rock_Chalk_Brick_Pillar_Base", 1, "Pillar"));
         recipes.add(generateRecipe(null, "Rock_Chalk", 1,
                 "Rock_Chalk_Brick_Pillar_Middle", 1, "Pillar"));
-        recipes.add(generateRecipe(null, "Rock_Chalk_Brick", 1,
-                "Rock_Chalk_Brick_Pillar_Middle", 1, "Pillar"));
         recipes.add(generateRecipe(null, "Rock_Chalk", 1,
-                "Rock_Chalk_Brick_Pillar_Middle", 1, "Pillar"));
-        recipes.add(generateRecipe(null, "Rock_Chalk_Brick", 1,
-                "Rock_Chalk_Brick_Pillar_Middle", 1, "Pillar"));
+                "Rock_Chalk_Brick_Wall", 2, "Wall"));
 
         // Rock_Runic_Cobble
         recipes.add(generateRecipe("Rock_Runic_Cobble", null, 1,
