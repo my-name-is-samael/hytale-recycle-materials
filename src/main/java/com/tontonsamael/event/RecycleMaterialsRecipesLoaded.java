@@ -431,6 +431,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadBeam(recipes, "Rock_Sandstone_Red_Cobble", "Cobbles");
         loadBeam(recipes, "Rock_Sandstone_White_Cobble", "Cobbles");
         loadBeam(recipes, "Rock_Shale_Cobble", "Cobbles");
+        loadBeam(recipes, "Rock_Slate_Cobble", "Cobbles");
         loadBeam(recipes, "Rock_Stone_Cobble", "Cobbles");
         loadBeam(recipes, "Rock_Volcanic_Cobble", "Cobbles");
 
