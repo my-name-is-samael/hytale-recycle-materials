@@ -165,7 +165,8 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
         assert uiCmd != null;
         RecycleMaterialsConfig conf = RecycleMaterials.get().getConfig();
 
-        boolean updated = checkAndProcessAction(SettingsActions.SLABS, data, conf::isSlabs, conf::setSlabs) ||
+        boolean updated = checkAndProcessAction(SettingsActions.SOIL, data, conf::isSoil, conf::setSoil) ||
+                checkAndProcessAction(SettingsActions.SLABS, data, conf::isSlabs, conf::setSlabs) ||
                 checkAndProcessAction(SettingsActions.STAIRS, data, conf::isStairs, conf::setStairs) ||
                 checkAndProcessAction(SettingsActions.PILLARS, data, conf::isPillars, conf::setPillars) ||
                 checkAndProcessAction(SettingsActions.BEAMS, data, conf::isBeams, conf::setBeams) ||
