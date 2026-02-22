@@ -1,7 +1,9 @@
-apply plugin: 'idea'
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'idea'
+}
 
-version = '1.0.5'
+version = '1.0.6'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
@@ -21,24 +23,5 @@ dependencies {
 
 jar {
     archiveBaseName = 'RecycleMaterials'
-    archiveVersion = '1.0.5'
-
-    doLast {
-        copy {
-            from archiveFile
-            into 'server/mods'
-        }
-    }
-}
-
-task shadowJar {
-    description 'Builds the project and deploys to server mods directory'
-    group 'build'
-
-    dependsOn clean, build
-
-    doLast {
-        println "✅ Build completed and JAR deployed to server/mods/"
-        println "🚀 Ready to start the server!"
-    }
+    archiveVersion = '1.0.6'
 }

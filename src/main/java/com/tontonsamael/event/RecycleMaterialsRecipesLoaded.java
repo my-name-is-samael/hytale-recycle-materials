@@ -366,6 +366,8 @@ public class RecycleMaterialsRecipesLoaded {
         loadSlab(recipes, "Rock_Aqua_Brick", "Bricks", true);
         loadSlab(recipes, "Rock_Basalt_Brick", "Bricks", true);
         loadSlab(recipes, "Rock_Calcite_Brick", "Bricks", true);
+        loadSlab(recipes, "Rock_Chalk_Brick", "Bricks", false);
+        loadSlab(recipes, "Rock_Gold_Brick", "Bricks", true);
         loadSlab(recipes, "Rock_Ledge_Brick", "Bricks", true);
         loadSlab(recipes, "Rock_Lime_Brick", "Bricks", true);
         loadSlab(recipes, "Rock_Marble_Brick", "Bricks", true);
