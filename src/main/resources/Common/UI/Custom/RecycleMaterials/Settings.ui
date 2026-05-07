@@ -48,7 +48,7 @@ $C.@PageOverlay {}
 
 $C.@DecoratedContainer {
     @CloseButton = true;
-    Anchor: (Width: 500, Height: 450);
+    Anchor: (Width: 500, Height: 530);
 
     #Title {
         $C.@Title {
@@ -109,6 +109,12 @@ $C.@DecoratedContainer {
 
         @ToggleLine #Salt {
             @Text = %recyclematerials.ui.salt;
+        }
+
+        @HR {}
+
+        @ToggleLine #LeatherRoofs {
+            @Text = %recyclematerials.ui.leatherRoofs;
         }
 
         Group #DirtyWarning {

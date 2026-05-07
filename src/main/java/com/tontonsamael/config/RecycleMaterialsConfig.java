@@ -8,41 +8,45 @@ import java.util.Objects;
 
 public class RecycleMaterialsConfig implements Cloneable {
     public static final BuilderCodec<RecycleMaterialsConfig> CODEC = BuilderCodec.builder(RecycleMaterialsConfig.class, RecycleMaterialsConfig::new)
-            .append(new KeyedCodec<Boolean>("SoilCrafts", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("SoilCrafts", Codec.BOOLEAN),
                     (config, value) -> config.soil = value,
                     (config) -> config.soil
             ).add()
-            .append(new KeyedCodec<Boolean>("SlabsToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("SlabsToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.slabs = value,
                     (config) -> config.slabs
             ).add()
-            .append(new KeyedCodec<Boolean>("StairsToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("StairsToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.stairs = value,
                     (config) -> config.stairs
             ).add()
-            .append(new KeyedCodec<Boolean>("PillarsToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("PillarsToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.pillars = value,
                     (config) -> config.pillars
             ).add()
-            .append(new KeyedCodec<Boolean>("BeamsToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("BeamsToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.beams = value,
                     (config) -> config.beams
             ).add()
-            .append(new KeyedCodec<Boolean>("RoofsToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("RoofsToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.roofs = value,
                     (config) -> config.roofs
             ).add()
-            .append(new KeyedCodec<Boolean>("FencesToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("FencesToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.fences = value,
                     (config) -> config.fences
             ).add()
-            .append(new KeyedCodec<Boolean>("WindowsToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("WindowsToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.windows = value,
                     (config) -> config.windows
             ).add()
-            .append(new KeyedCodec<Boolean>("SaltToBlocks", Codec.BOOLEAN),
+            .append(new KeyedCodec<>("SaltToBlocks", Codec.BOOLEAN),
                     (config, value) -> config.salt = value,
                     (config) -> config.salt
+            ).add()
+            .append(new KeyedCodec<>("LeatherToRoofs", Codec.BOOLEAN),
+                    (config, value) -> config.leatherRoofs = value,
+                    (config) -> config.leatherRoofs
             ).add()
             .build();
 
@@ -55,6 +59,7 @@ public class RecycleMaterialsConfig implements Cloneable {
     private boolean fences = true;
     private boolean windows = true;
     private boolean salt = true;
+    private boolean leatherRoofs = true;
 
     public RecycleMaterialsConfig() {
     }
@@ -131,8 +136,16 @@ public class RecycleMaterialsConfig implements Cloneable {
         this.salt = salt;
     }
 
+    public boolean isLeatherRoofs() {
+        return leatherRoofs;
+    }
+
+    public void setLeatherRoofs(boolean leatherRoofs) {
+        this.leatherRoofs = leatherRoofs;
+    }
+
     public int hashCode() {
-        return Objects.hash(soil, slabs, stairs, pillars, beams, roofs, fences, windows, salt);
+        return Objects.hash(soil, slabs, stairs, pillars, beams, roofs, fences, windows, salt, leatherRoofs);
     }
 
     public boolean equals(RecycleMaterialsConfig other) {

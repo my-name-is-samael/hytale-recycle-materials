@@ -31,7 +31,7 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
     private static final String ACTION = "Action";
 
     private enum SettingsActions {
-        CLOSE, SOIL, SLABS, STAIRS, PILLARS, BEAMS, ROOFS, FENCES, WINDOWS, SALT
+        CLOSE, SOIL, SLABS, STAIRS, PILLARS, BEAMS, ROOFS, FENCES, WINDOWS, SALT, LEATHER_ROOFS,
     }
 
     public static class RecycleMaterialsUIData {
@@ -71,6 +71,11 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
 
     private UICommandBuilder uiCmd;
 
+    private void addEventBinding(@Nonnull UIEventBuilder events, @Nonnull String selectorId, @Nonnull SettingsActions action) {
+        events.addEventBinding(CustomUIEventBindingType.Activating,
+                String.format("#%s #Toggle", selectorId), EventData.of(ACTION, action.name()));
+    }
+
     @Override
     public void build(@Nonnull Ref<EntityStore> ref,
                       @Nonnull UICommandBuilder cmd,
@@ -86,24 +91,16 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
         cmd.append("RecycleMaterials/Settings.ui");
         updateStates(RecycleMaterials.get().getConfig(), RecycleMaterials.get().getBootConfig());
 
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Soil #Toggle", EventData.of(ACTION, SettingsActions.SOIL.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Slabs #Toggle", EventData.of(ACTION, SettingsActions.SLABS.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Stairs #Toggle", EventData.of(ACTION, SettingsActions.STAIRS.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Pillars #Toggle", EventData.of(ACTION, SettingsActions.PILLARS.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Beams #Toggle", EventData.of(ACTION, SettingsActions.BEAMS.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Roofs #Toggle", EventData.of(ACTION, SettingsActions.ROOFS.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Fences #Toggle", EventData.of(ACTION, SettingsActions.FENCES.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Windows #Toggle", EventData.of(ACTION, SettingsActions.WINDOWS.name()));
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#Salt #Toggle", EventData.of(ACTION, SettingsActions.SALT.name()));
+        addEventBinding(events, "Soil", SettingsActions.SOIL);
+        addEventBinding(events, "Slabs", SettingsActions.SLABS);
+        addEventBinding(events, "Stairs", SettingsActions.STAIRS);
+        addEventBinding(events, "Pillars", SettingsActions.PILLARS);
+        addEventBinding(events, "Beams", SettingsActions.BEAMS);
+        addEventBinding(events, "Roofs", SettingsActions.ROOFS);
+        addEventBinding(events, "Fences", SettingsActions.FENCES);
+        addEventBinding(events, "Windows", SettingsActions.WINDOWS);
+        addEventBinding(events, "Salt", SettingsActions.SALT);
+        addEventBinding(events, "LeatherRoofs", SettingsActions.LEATHER_ROOFS);
 
         events.addEventBinding(CustomUIEventBindingType.Activating,
                 "#CloseButton", EventData.of(ACTION, SettingsActions.CLOSE.name()));
@@ -140,6 +137,7 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
         updateToggleLineState(conf.isFences(), bootConf.isFences(), "#Fences");
         updateToggleLineState(conf.isWindows(), bootConf.isWindows(), "#Windows");
         updateToggleLineState(conf.isSalt(), bootConf.isSalt(), "#Salt");
+        updateToggleLineState(conf.isLeatherRoofs(), bootConf.isLeatherRoofs(), "#LeatherRoofs");
 
         // footer dirty label
         if (conf.equals(bootConf)) {
@@ -173,7 +171,8 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
                 checkAndProcessAction(SettingsActions.ROOFS, data, conf::isRoofs, conf::setRoofs) ||
                 checkAndProcessAction(SettingsActions.FENCES, data, conf::isFences, conf::setFences) ||
                 checkAndProcessAction(SettingsActions.WINDOWS, data, conf::isWindows, conf::setWindows) ||
-                checkAndProcessAction(SettingsActions.SALT, data, conf::isSalt, conf::setSalt);
+                checkAndProcessAction(SettingsActions.SALT, data, conf::isSalt, conf::setSalt) ||
+                checkAndProcessAction(SettingsActions.LEATHER_ROOFS, data, conf::isLeatherRoofs, conf::setLeatherRoofs);
 
         if (updated) {
             Player player = store.getComponent(ref, Player.getComponentType());

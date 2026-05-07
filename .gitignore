@@ -4,7 +4,6 @@ target/
 local-repo/
 gradle/
 build/
-server/
 gradle-8.5-bin.zip
 gradlew.bat
 
