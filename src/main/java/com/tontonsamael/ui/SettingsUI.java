@@ -60,7 +60,7 @@ public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMateri
         // OP
         PermissionsModule perms = PermissionsModule.get();
         Set<String> groups = perms.getGroupsForUser(uuidComponent.getUuid());
-        return groups.contains("OP");
+        return groups.contains("hytale:Admin");
     }
 
     private void closePage(Ref<EntityStore> playerRef, Store<EntityStore> store) {

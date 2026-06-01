@@ -15,15 +15,15 @@ public class RecycleMaterialsCommand extends AbstractPlayerCommand {
 
     public RecycleMaterialsCommand() {
         super("recyclematerials", "recyclematerials.command.description");
-        this.setPermissionGroups("OP");
+        this.setPermissionGroups("hytale:Admin");
         this.requirePermission("recyclematerials.settings");
     }
 
     @Override
     protected void execute(@NonNullDecl CommandContext context, @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref, @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
-        if (context.sender() instanceof Player player) {
-            SettingsUI page = new SettingsUI(playerRef);
-            player.getPageManager().openCustomPage(ref, store, page);
-        }
+        Player player = store.getComponent(ref, Player.getComponentType());
+        if (player == null) return;
+        SettingsUI page = new SettingsUI(playerRef);
+        player.getPageManager().openCustomPage(ref, store, page);
     }
 }
