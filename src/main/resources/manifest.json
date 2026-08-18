@@ -1,7 +1,7 @@
 {
   "Group": "com.tontonsamael",
   "Name": "RecycleMaterials",
-  "Version": "1.1.1",
+  "Version": "1.1.2",
   "Description": "Craft back blocks from your building materials, with soil slabs and storage purpose blocks.",
   "Authors": [
     {
@@ -10,7 +10,7 @@
       "Url": ""
     }
   ],
-  "ServerVersion": "^0.5.3",
+  "ServerVersion": "^0.5.9",
   "Dependencies": {},
   "DisabledByDefault": false,
   "IncludesAssetPack": true,

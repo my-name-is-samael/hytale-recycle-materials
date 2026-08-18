@@ -446,6 +446,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadStair(recipes, "Rock_Sandstone_Red_Brick", "Bricks");
         loadStair(recipes, "Rock_Sandstone_White_Brick", "Bricks");
         loadStair(recipes, "Rock_Shale_Brick", "Bricks");
+        loadStair(recipes, "Rock_Slate_Brick", "Bricks");
         loadStair(recipes, "Rock_Stone_Brick", "Bricks");
         loadStair(recipes, "Rock_Volcanic_Brick", "Bricks");
         loadStair(recipes, "Soil_Snow_Brick", "Bricks");
@@ -526,6 +527,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadSlab(recipes, "Rock_Sandstone_Red_Brick", "Bricks", null, true);
         loadSlab(recipes, "Rock_Sandstone_White_Brick", "Bricks", null, true);
         loadSlab(recipes, "Rock_Shale_Brick", "Bricks", null, true);
+        loadSlab(recipes, "Rock_Slate_Brick", "Bricks", null, true);
         loadSlab(recipes, "Rock_Stone_Brick", "Bricks", null, true);
         loadSlab(recipes, "Rock_Volcanic_Brick", "Bricks", null, true);
 
@@ -608,6 +610,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadBeam(recipes, "Rock_Sandstone_Red_Brick", "Bricks");
         loadBeam(recipes, "Rock_Sandstone_White_Brick", "Bricks");
         loadBeam(recipes, "Rock_Shale_Brick", "Bricks");
+        loadBeam(recipes, "Rock_Slate_Brick", "Bricks");
         loadBeam(recipes, "Rock_Stone_Brick", "Bricks");
         loadBeam(recipes, "Rock_Volcanic_Brick", "Bricks");
 
@@ -650,6 +653,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadPillar(recipes, "Rock_Sandstone_Red_Brick", "Bricks");
         loadPillar(recipes, "Rock_Sandstone_White_Brick", "Bricks");
         loadPillar(recipes, "Rock_Shale_Brick", "Bricks");
+        loadPillar(recipes, "Rock_Slate_Brick", "Bricks");
         loadPillar(recipes, "Rock_Stone_Brick", "Bricks");
         loadPillar(recipes, "Rock_Volcanic_Brick", "Bricks");
 
@@ -742,6 +746,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadRoof(recipes, "Rock_Sandstone_Red_Brick", "Bricks");
         loadRoof(recipes, "Rock_Sandstone_White_Brick", "Bricks");
         loadRoof(recipes, "Rock_Shale_Brick", "Bricks");
+        loadRoof(recipes, "Rock_Slate_Brick", "Bricks");
         loadRoof(recipes, "Rock_Stone_Brick", "Bricks");
         loadRoof(recipes, "Rock_Volcanic_Brick", "Bricks");
         loadRoof(recipes, "Soil_Clay_Ocean_Brick", "Bricks");
@@ -835,6 +840,7 @@ public class RecycleMaterialsRecipesLoaded {
         loadWall(recipes, "Rock_Sandstone_Red_Brick", "Bricks");
         loadWall(recipes, "Rock_Sandstone_White_Brick", "Bricks");
         loadWall(recipes, "Rock_Shale_Brick", "Bricks");
+        loadWall(recipes, "Rock_Slate_Brick", "Bricks");
         loadWall(recipes, "Rock_Stone_Brick", "Bricks");
         loadWall(recipes, "Rock_Volcanic_Brick", "Bricks");
 
