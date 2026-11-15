@@ -1,0 +1,47 @@
+$S = "Styles.ui";
+
+// One setting: name and description on the left, ON/OFF switch on the right.
+// RecycleMaterialsSettingsUI shows exactly one of #On / #Off.
+Group {
+    LayoutMode: Top;
+    Anchor: (Left: 0, Right: 0, Height: 42);
+
+    Group {
+        LayoutMode: Left;
+        Anchor: (Left: 0, Right: 0, Height: 40);
+
+        Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+
+            Label #Label {
+                Anchor: (Height: 21);
+                Style: $S.@RowLabel;
+            }
+
+            Label #Desc {
+                Anchor: (Height: 16);
+                Style: $S.@Note;
+            }
+        }
+
+        Group {
+            Anchor: (Width: 70, Height: 40);
+
+            TextButton #On {
+                Anchor: (Left: 0, Right: 0, Top: 6, Height: 28);
+                Text: %recyclematerials.ui.button.on;
+                Style: $S.@SwitchOn;
+            }
+
+            TextButton #Off {
+                Anchor: (Left: 0, Right: 0, Top: 6, Height: 28);
+                Text: %recyclematerials.ui.button.off;
+                Style: $S.@SwitchOff;
+                Visible: false;
+            }
+        }
+    }
+
+    $S.@Hairline {}
+}

@@ -4,159 +4,70 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
-import java.util.Objects;
+import java.util.EnumSet;
+import java.util.Set;
 
-public class RecycleMaterialsConfig implements Cloneable {
-    public static final BuilderCodec<RecycleMaterialsConfig> CODEC = BuilderCodec.builder(RecycleMaterialsConfig.class, RecycleMaterialsConfig::new)
-            .append(new KeyedCodec<>("SoilCrafts", Codec.BOOLEAN),
-                    (config, value) -> config.soil = value,
-                    (config) -> config.soil
-            ).add()
-            .append(new KeyedCodec<>("SlabsToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.slabs = value,
-                    (config) -> config.slabs
-            ).add()
-            .append(new KeyedCodec<>("StairsToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.stairs = value,
-                    (config) -> config.stairs
-            ).add()
-            .append(new KeyedCodec<>("PillarsToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.pillars = value,
-                    (config) -> config.pillars
-            ).add()
-            .append(new KeyedCodec<>("BeamsToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.beams = value,
-                    (config) -> config.beams
-            ).add()
-            .append(new KeyedCodec<>("RoofsToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.roofs = value,
-                    (config) -> config.roofs
-            ).add()
-            .append(new KeyedCodec<>("FencesToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.fences = value,
-                    (config) -> config.fences
-            ).add()
-            .append(new KeyedCodec<>("WindowsToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.windows = value,
-                    (config) -> config.windows
-            ).add()
-            .append(new KeyedCodec<>("SaltToBlocks", Codec.BOOLEAN),
-                    (config, value) -> config.salt = value,
-                    (config) -> config.salt
-            ).add()
-            .append(new KeyedCodec<>("LeatherToRoofs", Codec.BOOLEAN),
-                    (config, value) -> config.leatherRoofs = value,
-                    (config) -> config.leatherRoofs
-            ).add()
-            .build();
+public class RecycleMaterialsConfig {
+    public static final BuilderCodec<RecycleMaterialsConfig> CODEC = buildCodec();
 
-    private boolean soil = true;
-    private boolean slabs = true;
-    private boolean stairs = true;
-    private boolean pillars = true;
-    private boolean beams = true;
-    private boolean roofs = true;
-    private boolean fences = true;
-    private boolean windows = true;
-    private boolean salt = true;
-    private boolean leatherRoofs = true;
-
-    public RecycleMaterialsConfig() {
+    private static BuilderCodec<RecycleMaterialsConfig> buildCodec() {
+        var builder = BuilderCodec.builder(RecycleMaterialsConfig.class, RecycleMaterialsConfig::new);
+        for (RecycleCategory category : RecycleCategory.values()) {
+            builder.append(new KeyedCodec<>(category.key, Codec.BOOLEAN),
+                    (config, value) -> config.setEnabled(category, value),
+                    config -> config.isEnabled(category)).add();
+        }
+        builder.append(new KeyedCodec<>("CraftTimeTenths", Codec.INTEGER),
+                (config, value) -> config.setCraftTimeTenths(value),
+                config -> config.craftTimeTenths).add();
+        return builder.build();
     }
 
-    public boolean isSoil() {
-        return soil;
+    public static final int MAX_CRAFT_TIME_TENTHS = 10;
+
+    // Every category is enabled by default, so keys missing from an older baseConfig.json stay on.
+    private final Set<RecycleCategory> enabled = EnumSet.allOf(RecycleCategory.class);
+
+    // Craft time of every recipe, in tenths of a second (0 to 10), kept as an integer to avoid float noise.
+    private int craftTimeTenths = 1;
+
+    public int getCraftTimeTenths() {
+        return craftTimeTenths;
     }
 
-    public void setSoil(boolean soil) {
-        this.soil = soil;
+    public void setCraftTimeTenths(int tenths) {
+        this.craftTimeTenths = Math.max(0, Math.min(MAX_CRAFT_TIME_TENTHS, tenths));
     }
 
-    public boolean isSlabs() {
-        return slabs;
+    public float getCraftTimeSeconds() {
+        return craftTimeTenths / 10f;
     }
 
-    public void setSlabs(boolean slabs) {
-        this.slabs = slabs;
+    public boolean isEnabled(RecycleCategory category) {
+        return enabled.contains(category);
     }
 
-    public boolean isStairs() {
-        return stairs;
+    public void setEnabled(RecycleCategory category, boolean value) {
+        if (value) enabled.add(category);
+        else enabled.remove(category);
     }
 
-    public void setStairs(boolean stairs) {
-        this.stairs = stairs;
+    public void toggle(RecycleCategory category) {
+        setEnabled(category, !isEnabled(category));
     }
 
-    public boolean isPillars() {
-        return pillars;
+    /** Independent snapshot, safe to hand to another thread. */
+    public RecycleMaterialsConfig copy() {
+        RecycleMaterialsConfig copy = new RecycleMaterialsConfig();
+        copy.enabled.clear();
+        copy.enabled.addAll(enabled);
+        copy.craftTimeTenths = craftTimeTenths;
+        return copy;
     }
 
-    public void setPillars(boolean pillars) {
-        this.pillars = pillars;
-    }
-
-    public boolean isBeams() {
-        return beams;
-    }
-
-    public void setBeams(boolean beams) {
-        this.beams = beams;
-    }
-
-    public boolean isRoofs() {
-        return roofs;
-    }
-
-    public void setRoofs(boolean roofs) {
-        this.roofs = roofs;
-    }
-
-    public boolean isFences() {
-        return fences;
-    }
-
-    public void setFences(boolean fences) {
-        this.fences = fences;
-    }
-
-    public boolean isWindows() {
-        return windows;
-    }
-
-    public void setWindows(boolean windows) {
-        this.windows = windows;
-    }
-
-    public boolean isSalt() {
-        return salt;
-    }
-
-    public void setSalt(boolean salt) {
-        this.salt = salt;
-    }
-
-    public boolean isLeatherRoofs() {
-        return leatherRoofs;
-    }
-
-    public void setLeatherRoofs(boolean leatherRoofs) {
-        this.leatherRoofs = leatherRoofs;
-    }
-
-    public int hashCode() {
-        return Objects.hash(soil, slabs, stairs, pillars, beams, roofs, fences, windows, salt, leatherRoofs);
-    }
-
-    public boolean equals(RecycleMaterialsConfig other) {
-        return this.hashCode() == other.hashCode();
-    }
-
-    public RecycleMaterialsConfig clone() {
-        try {
-            return (RecycleMaterialsConfig) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+    public void apply(RecyclePreset preset) {
+        for (RecycleCategory category : RecycleCategory.values()) {
+            setEnabled(category, preset.includes(category));
         }
     }
 }

@@ -1,0 +1,39 @@
+$C = "../Common.ui";
+
+// Slate palette, after the Tamework settings windows: soft light text on dark blue-grey, one teal accent.
+@Text = #eef2f6;
+@Soft = #c2ccd6;
+@Dim = #8794a4;
+@Teal = #5fe0c0;
+
+@Caps = LabelStyle(FontSize: 11, RenderBold: true, RenderUppercase: true, LetterSpacing: 1, TextColor: #96a9be, VerticalAlignment: Center);
+@RowLabel = LabelStyle(FontSize: 14, TextColor: @Text, VerticalAlignment: Center);
+@Note = LabelStyle(FontSize: 11, TextColor: @Dim, VerticalAlignment: Center, Wrap: true);
+
+@ButtonLabel = LabelStyle(FontSize: 12, RenderBold: true, TextColor: @Text, HorizontalAlignment: Center, VerticalAlignment: Center);
+
+@SwitchOn = TextButtonStyle(
+    Default: (Background: #1f5a4d, LabelStyle: (...@ButtonLabel, TextColor: #eafff8)),
+    Hovered: (Background: #287262, LabelStyle: (...@ButtonLabel, TextColor: #ffffff)),
+    Pressed: (Background: #17463c, LabelStyle: (...@ButtonLabel, TextColor: #eafff8)),
+    Sounds: $C.@ButtonSounds
+);
+
+@SwitchOff = TextButtonStyle(
+    Default: (Background: #2a323d, LabelStyle: (...@ButtonLabel, TextColor: @Dim)),
+    Hovered: (Background: #36404d, LabelStyle: (...@ButtonLabel, TextColor: @Soft)),
+    Pressed: (Background: #20272f, LabelStyle: (...@ButtonLabel, TextColor: @Soft)),
+    Sounds: $C.@ButtonSounds
+);
+
+@PanelButton = TextButtonStyle(
+    Default: (Background: #2d3744, LabelStyle: @ButtonLabel),
+    Hovered: (Background: #3a4756, LabelStyle: @ButtonLabel),
+    Pressed: (Background: #232b35, LabelStyle: @ButtonLabel),
+    Sounds: $C.@ButtonSounds
+);
+
+@Hairline = Group {
+    Anchor: (Left: 0, Right: 0, Height: 1);
+    Background: #ffffff(0.08);
+};

@@ -1,54 +1,11 @@
 $C = "../Common.ui";
-
-@StyleLabelDirty = (
-    RenderBold: true,
-    TextColor: #FFAC4A
-);
-
-@ToggleOnStyle = TextButtonStyle(
-    Default: (
-        Background: #1a3d2e,
-        LabelStyle: (FontSize: 14, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)
-    ),
-    Hovered: (
-        Background: #2a4d3e,
-        LabelStyle: (FontSize: 14, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)
-    ),
-    Pressed: (
-        Background: #0a2d1e,
-        LabelStyle: (FontSize: 14, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)
-    ),
-    Sounds: $C.@ButtonSounds
-);
-
-@HR = Group {
-    Padding: (Vertical: 6);
-
-    $C.@PanelSeparatorFancy {}
-};
-
-@ToggleLine = Group {
-    @Text = "";
-    LayoutMode: Left;
-    Anchor: (Left: 0, Right: 0, Height: 24);
-
-    Label #Label {
-        Text: @Text;
-        FlexWeight: 1;
-        Style: (RenderBold: false, TextColor: #ffffff);
-    }
-    TextButton #Toggle {
-        Text: %recyclematerials.ui.button.on;
-        Anchor: (Width: 80, Height: 28);
-        Style: @ToggleOnStyle;
-    }
-};
+$S = "Styles.ui";
 
 $C.@PageOverlay {}
 
 $C.@DecoratedContainer {
     @CloseButton = true;
-    Anchor: (Width: 500, Height: 530);
+    Anchor: (Width: 560, Height: 790);
 
     #Title {
         $C.@Title {
@@ -59,72 +16,121 @@ $C.@DecoratedContainer {
     #Content {
         LayoutMode: Top;
 
-        @ToggleLine #Soil {
-            @Text = %recyclematerials.ui.soil;
+        Label {
+            Anchor: (Height: 30);
+            Text: %recyclematerials.ui.subtitle;
+            Style: $S.@Note;
         }
 
-        @HR {}
-
-        @ToggleLine #Slabs {
-            @Text = %recyclematerials.ui.slabs;
+        Label {
+            Anchor: (Height: 22);
+            Text: %recyclematerials.ui.section.presets;
+            Style: $S.@Caps;
         }
 
-        @HR {}
+        Group #Presets {
+            LayoutMode: Left;
+            Anchor: (Left: 0, Right: 0, Height: 34);
 
-        @ToggleLine #Stairs {
-            @Text = %recyclematerials.ui.stairs;
-        }
-
-        @HR {}
-
-        @ToggleLine #Pillars {
-            @Text = %recyclematerials.ui.pillars;
-        }
-
-        @HR {}
-
-        @ToggleLine #Beams {
-            @Text = %recyclematerials.ui.beams;
-        }
-
-        @HR {}
-
-        @ToggleLine #Roofs {
-            @Text = %recyclematerials.ui.roofs;
-        }
-
-        @HR {}
-
-        @ToggleLine #Fences {
-            @Text = %recyclematerials.ui.fences;
-        }
-
-        @HR {}
-
-        @ToggleLine #Windows {
-            @Text = %recyclematerials.ui.windows;
-        }
-
-        @HR {}
-
-        @ToggleLine #Salt {
-            @Text = %recyclematerials.ui.salt;
-        }
-
-        @HR {}
-
-        @ToggleLine #LeatherRoofs {
-            @Text = %recyclematerials.ui.leatherRoofs;
-        }
-
-        Group #DirtyWarning {
-            LayoutMode: Center;
-            Anchor: (Top: 30);
-
-            Label {
-                Text: %recyclematerials.ui.dirty.warning;
-                Style: (...@StyleLabelDirty, FontSize: 12);
+            TextButton #PresetFull {
+                FlexWeight: 1;
+                Anchor: (Height: 30, Right: 6);
+                Text: %recyclematerials.ui.preset.full;
+                Style: $S.@PanelButton;
             }
+            TextButton #PresetBuilding {
+                FlexWeight: 1;
+                Anchor: (Height: 30, Right: 6);
+                Text: %recyclematerials.ui.preset.building;
+                Style: $S.@PanelButton;
+            }
+            TextButton #PresetMinimal {
+                FlexWeight: 1;
+                Anchor: (Height: 30, Right: 6);
+                Text: %recyclematerials.ui.preset.minimal;
+                Style: $S.@PanelButton;
+            }
+            TextButton #PresetNone {
+                FlexWeight: 1;
+                Anchor: (Height: 30);
+                Text: %recyclematerials.ui.preset.none;
+                Style: $S.@PanelButton;
+            }
+        }
+
+        Label #PresetStatus {
+            Anchor: (Height: 22);
+            Style: $S.@Note;
+        }
+
+        Group {
+            Anchor: (Height: 8);
+        }
+
+        Label {
+            Anchor: (Height: 22);
+            Text: %recyclematerials.ui.group.structure;
+            Style: $S.@Caps;
+        }
+
+        Group #StructureRows {
+            LayoutMode: Top;
+            Anchor: (Left: 0, Right: 0, Height: 294);
+        }
+
+        Group {
+            Anchor: (Height: 8);
+        }
+
+        Label {
+            Anchor: (Height: 22);
+            Text: %recyclematerials.ui.group.materials;
+            Style: $S.@Caps;
+        }
+
+        Group #MaterialsRows {
+            LayoutMode: Top;
+            Anchor: (Left: 0, Right: 0, Height: 126);
+        }
+
+        Group {
+            Anchor: (Height: 8);
+        }
+
+        Label {
+            Anchor: (Height: 22);
+            Text: %recyclematerials.ui.group.craftTime;
+            Style: $S.@Caps;
+        }
+
+        Group {
+            LayoutMode: Left;
+            Anchor: (Left: 0, Right: 0, Height: 28);
+
+            $C.@Slider #CraftTime {
+                @Anchor = (Width: 400, Right: 20);
+                Value: 0;
+                Min: 0;
+                Max: 10;
+                Step: 1;
+            }
+
+            Label #CraftTimeValue {
+                Text: "0.0 s";
+                Style: $S.@RowLabel;
+            }
+        }
+
+        Label {
+            Anchor: (Height: 20);
+            Text: %recyclematerials.ui.craftTime.desc;
+            Style: $S.@Note;
+        }
+
+        Label {
+            Anchor: (Top: 10, Height: 20);
+            Text: %recyclematerials.ui.footer;
+            Style: $S.@Note;
         }
     }
 }

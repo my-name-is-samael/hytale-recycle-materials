@@ -19,165 +19,162 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.tontonsamael.RecycleMaterials;
+import com.tontonsamael.config.RecycleCategory;
 import com.tontonsamael.config.RecycleMaterialsConfig;
-import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+import com.tontonsamael.config.RecyclePreset;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.EnumMap;
+import java.util.Map;
 
-public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.RecycleMaterialsUIData> {
+public class SettingsUI extends InteractiveCustomUIPage<SettingsUI.UIData> {
     private static final String ACTION = "Action";
+    private static final String TARGET = "Target";
+    private static final String ROW_DOC = "RecycleMaterials/Row.ui";
 
-    private enum SettingsActions {
-        CLOSE, SOIL, SLABS, STAIRS, PILLARS, BEAMS, ROOFS, FENCES, WINDOWS, SALT, LEATHER_ROOFS,
-    }
+    private static final String ACTION_CLOSE = "close";
+    private static final String ACTION_TOGGLE = "toggle";
+    private static final String ACTION_PRESET = "preset";
+    private static final String ACTION_CRAFT_TIME = "craftTime";
+    private static final String ACTION_CRAFT_TIME_DRAG = "craftTimeDrag";
 
-    public static class RecycleMaterialsUIData {
-        public static final BuilderCodec<RecycleMaterialsUIData> CODEC = BuilderCodec.builder(RecycleMaterialsUIData.class, RecycleMaterialsUIData::new)
-                .append(new KeyedCodec<>(ACTION, Codec.STRING),
-                        (data, value) -> data.action = value,
-                        data -> data.action).add()
+    public static class UIData {
+        public static final BuilderCodec<UIData> CODEC = BuilderCodec.builder(UIData.class, UIData::new)
+                .append(new KeyedCodec<>(ACTION, Codec.STRING), (data, value) -> data.action = value, data -> data.action).add()
+                .append(new KeyedCodec<>(TARGET, Codec.STRING), (data, value) -> data.target = value, data -> data.target).add()
+                .append(new KeyedCodec<>("@CraftTime", Codec.INTEGER), (data, value) -> data.craftTime = value, data -> data.craftTime).add()
                 .build();
 
         private String action;
+        private String target;
+        private Integer craftTime;
     }
+
+    /** Where each category row lives in its list, so updates can address it. */
+    private final Map<RecycleCategory, String> rowSelectors = new EnumMap<>(RecycleCategory.class);
 
     public SettingsUI(PlayerRef playerRef) {
-        super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, RecycleMaterialsUIData.CODEC);
+        super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, UIData.CODEC);
     }
 
-    private boolean checkAccess(Store<EntityStore> store, Ref<EntityStore> ref) {
-        UUIDComponent uuidComponent = store.getComponent(ref, UUIDComponent.getComponentType());
-        assert uuidComponent != null;
-
-        // permission
-        if (PermissionsModule.get().hasPermission(uuidComponent.getUuid(), "recyclematerials.settings")) {
-            return true;
-        }
-
-        // OP
+    private static boolean hasAccess(Store<EntityStore> store, Ref<EntityStore> ref) {
+        UUIDComponent uuid = store.getComponent(ref, UUIDComponent.getComponentType());
+        if (uuid == null) return false;
         PermissionsModule perms = PermissionsModule.get();
-        Set<String> groups = perms.getGroupsForUser(uuidComponent.getUuid());
-        return groups.contains("hytale:Admin");
+        return perms.hasPermission(uuid.getUuid(), "recyclematerials.settings")
+                || perms.getGroupsForUser(uuid.getUuid()).contains("hytale:Admin");
     }
 
-    private void closePage(Ref<EntityStore> playerRef, Store<EntityStore> store) {
-        Player player = store.getComponent(playerRef, Player.getComponentType());
-        assert player != null;
-        player.getPageManager().setPage(playerRef, store, Page.None);
-    }
-
-    private UICommandBuilder uiCmd;
-
-    private void addEventBinding(@Nonnull UIEventBuilder events, @Nonnull String selectorId, @Nonnull SettingsActions action) {
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                String.format("#%s #Toggle", selectorId), EventData.of(ACTION, action.name()));
+    private void closePage(Ref<EntityStore> ref, Store<EntityStore> store) {
+        Player player = store.getComponent(ref, Player.getComponentType());
+        if (player != null) player.getPageManager().setPage(ref, store, Page.None);
     }
 
     @Override
-    public void build(@Nonnull Ref<EntityStore> ref,
-                      @Nonnull UICommandBuilder cmd,
-                      @Nonnull UIEventBuilder events,
-                      @Nonnull Store<EntityStore> store) {
-
-        if (!checkAccess(store, ref)) {
+    public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder events, @Nonnull Store<EntityStore> store) {
+        if (!hasAccess(store, ref)) {
             closePage(ref, store);
             return;
         }
 
-        uiCmd = cmd;
         cmd.append("RecycleMaterials/Settings.ui");
-        updateStates(RecycleMaterials.get().getConfig(), RecycleMaterials.get().getBootConfig());
 
-        addEventBinding(events, "Soil", SettingsActions.SOIL);
-        addEventBinding(events, "Slabs", SettingsActions.SLABS);
-        addEventBinding(events, "Stairs", SettingsActions.STAIRS);
-        addEventBinding(events, "Pillars", SettingsActions.PILLARS);
-        addEventBinding(events, "Beams", SettingsActions.BEAMS);
-        addEventBinding(events, "Roofs", SettingsActions.ROOFS);
-        addEventBinding(events, "Fences", SettingsActions.FENCES);
-        addEventBinding(events, "Windows", SettingsActions.WINDOWS);
-        addEventBinding(events, "Salt", SettingsActions.SALT);
-        addEventBinding(events, "LeatherRoofs", SettingsActions.LEATHER_ROOFS);
+        // One row per category, in its group's list.
+        Map<RecycleCategory.Group, Integer> counts = new EnumMap<>(RecycleCategory.Group.class);
+        for (RecycleCategory category : RecycleCategory.values()) {
+            String list = category.group == RecycleCategory.Group.STRUCTURE ? "#StructureRows" : "#MaterialsRows";
+            int index = counts.merge(category.group, 1, Integer::sum) - 1;
+            cmd.append(list, ROW_DOC);
 
-        events.addEventBinding(CustomUIEventBindingType.Activating,
-                "#CloseButton", EventData.of(ACTION, SettingsActions.CLOSE.name()));
-    }
+            String row = list + "[" + index + "]";
+            rowSelectors.put(category, row);
+            cmd.set(row + " #Label.Text", Message.translation("recyclematerials.ui." + category.lang));
+            cmd.set(row + " #Desc.Text", Message.translation("recyclematerials.ui." + category.lang + ".desc"));
 
-    private void toggleLabelDirty(String selector) {
-        uiCmd.set(selector + ".Style.TextColor", "#ffac4a");
-        uiCmd.set(selector + ".Style.RenderBold", true);
-    }
-
-    private void toggleButtonOff(String selector) {
-        uiCmd.set(selector + ".Text", Message.translation("recyclematerials.ui.button.off"));
-        uiCmd.set(selector + ".Style.Default.Background", "#3d1a1a");
-        uiCmd.set(selector + ".Style.Hovered.Background", "#4d2a2a");
-        uiCmd.set(selector + ".Style.Pressed.Background", "#321b1b");
-    }
-
-    private void updateToggleLineState(boolean value, boolean bootValue, String selector) {
-        if (value != bootValue) {
-            toggleLabelDirty(selector + " #Label");
+            EventData toggle = EventData.of(ACTION, ACTION_TOGGLE).append(TARGET, category.name());
+            events.addEventBinding(CustomUIEventBindingType.Activating, row + " #On", toggle);
+            events.addEventBinding(CustomUIEventBindingType.Activating, row + " #Off", toggle);
         }
-        if (!value) {
-            toggleButtonOff(selector + " #Toggle");
+
+        for (RecyclePreset preset : RecyclePreset.values()) {
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#Preset" + capitalize(preset.name()),
+                    EventData.of(ACTION, ACTION_PRESET).append(TARGET, preset.name()));
         }
+        events.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton", EventData.of(ACTION, ACTION_CLOSE));
+        // While dragging, only the label follows. The binding must not lock the interface, or the drag is interrupted.
+        // The value is applied (saved, recipes swapped) when the mouse button is released.
+        events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#CraftTime",
+                EventData.of(ACTION, ACTION_CRAFT_TIME_DRAG).append("@CraftTime", "#CraftTime.Value"), false);
+        events.addEventBinding(CustomUIEventBindingType.MouseButtonReleased, "#CraftTime",
+                EventData.of(ACTION, ACTION_CRAFT_TIME).append("@CraftTime", "#CraftTime.Value"));
+
+        RecycleMaterialsConfig config = RecycleMaterials.get().getConfig();
+        cmd.set("#CraftTime.Value", config.getCraftTimeTenths());
+        applyState(cmd, config);
     }
 
-    private void updateStates(RecycleMaterialsConfig conf, RecycleMaterialsConfig bootConf) {
-        updateToggleLineState(conf.isSoil(), bootConf.isSoil(), "#Soil");
-        updateToggleLineState(conf.isSlabs(), bootConf.isSlabs(), "#Slabs");
-        updateToggleLineState(conf.isStairs(), bootConf.isStairs(), "#Stairs");
-        updateToggleLineState(conf.isPillars(), bootConf.isPillars(), "#Pillars");
-        updateToggleLineState(conf.isBeams(), bootConf.isBeams(), "#Beams");
-        updateToggleLineState(conf.isRoofs(), bootConf.isRoofs(), "#Roofs");
-        updateToggleLineState(conf.isFences(), bootConf.isFences(), "#Fences");
-        updateToggleLineState(conf.isWindows(), bootConf.isWindows(), "#Windows");
-        updateToggleLineState(conf.isSalt(), bootConf.isSalt(), "#Salt");
-        updateToggleLineState(conf.isLeatherRoofs(), bootConf.isLeatherRoofs(), "#LeatherRoofs");
-
-        // footer dirty label
-        if (conf.equals(bootConf)) {
-            uiCmd.remove("#DirtyWarning");
-        }
+    private static String capitalize(String enumName) {
+        return enumName.charAt(0) + enumName.substring(1).toLowerCase();
     }
 
-    private boolean checkAndProcessAction(SettingsActions action, RecycleMaterialsUIData data, Supplier<Boolean> getter, Consumer<Boolean> setter) {
-        if (action.name().equals(data.action)) {
-            setter.accept(!getter.get());
-            RecycleMaterials.get().saveConfig();
-            return true;
+    /** Pushes the config state (switches and preset label) into the window. */
+    private void applyState(UICommandBuilder cmd, RecycleMaterialsConfig config) {
+        for (RecycleCategory category : RecycleCategory.values()) {
+            String row = rowSelectors.get(category);
+            boolean on = config.isEnabled(category);
+            cmd.set(row + " #On.Visible", on);
+            cmd.set(row + " #Off.Visible", !on);
         }
-        return false;
+
+        String preset = "custom";
+        for (RecyclePreset p : RecyclePreset.values()) {
+            if (p.matches(config)) {
+                preset = p.lang;
+                break;
+            }
+        }
+        cmd.set("#PresetStatus.Text", Message.translation("recyclematerials.ui.preset.current." + preset));
+        cmd.set("#CraftTimeValue.Text", String.format(java.util.Locale.ROOT, "%.1f s", config.getCraftTimeSeconds()));
     }
 
-    public void handleDataEvent(@NonNullDecl Ref<EntityStore> ref, @NonNullDecl Store<EntityStore> store, @NonNullDecl RecycleMaterialsUIData data) {
-        if (!checkAccess(store, ref) || SettingsActions.CLOSE.name().equals(data.action)) {
+    @Override
+    public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull UIData data) {
+        if (!hasAccess(store, ref) || ACTION_CLOSE.equals(data.action)) {
             closePage(ref, store);
             return;
         }
 
-        assert uiCmd != null;
-        RecycleMaterialsConfig conf = RecycleMaterials.get().getConfig();
+        RecycleMaterialsConfig config = RecycleMaterials.get().getConfig();
+        if (ACTION_CRAFT_TIME_DRAG.equals(data.action)) {
+            if (data.craftTime != null) {
+                config.setCraftTimeTenths(data.craftTime);
+                UICommandBuilder cmd = new UICommandBuilder();
+                cmd.set("#CraftTimeValue.Text", String.format(java.util.Locale.ROOT, "%.1f s", config.getCraftTimeSeconds()));
+                sendUpdate(cmd, false);
+            }
+            return;
+        }
+        boolean changed = false;
+        try {
+            if (ACTION_TOGGLE.equals(data.action)) {
+                config.toggle(RecycleCategory.valueOf(data.target));
+                changed = true;
+            } else if (ACTION_PRESET.equals(data.action)) {
+                config.apply(RecyclePreset.valueOf(data.target));
+                changed = true;
+            } else if (ACTION_CRAFT_TIME.equals(data.action) && data.craftTime != null) {
+                config.setCraftTimeTenths(data.craftTime);
+                changed = true;
+            }
+        } catch (IllegalArgumentException ignored) {
+            // unknown target from a stale or forged event
+        }
 
-        boolean updated = checkAndProcessAction(SettingsActions.SOIL, data, conf::isSoil, conf::setSoil) ||
-                checkAndProcessAction(SettingsActions.SLABS, data, conf::isSlabs, conf::setSlabs) ||
-                checkAndProcessAction(SettingsActions.STAIRS, data, conf::isStairs, conf::setStairs) ||
-                checkAndProcessAction(SettingsActions.PILLARS, data, conf::isPillars, conf::setPillars) ||
-                checkAndProcessAction(SettingsActions.BEAMS, data, conf::isBeams, conf::setBeams) ||
-                checkAndProcessAction(SettingsActions.ROOFS, data, conf::isRoofs, conf::setRoofs) ||
-                checkAndProcessAction(SettingsActions.FENCES, data, conf::isFences, conf::setFences) ||
-                checkAndProcessAction(SettingsActions.WINDOWS, data, conf::isWindows, conf::setWindows) ||
-                checkAndProcessAction(SettingsActions.SALT, data, conf::isSalt, conf::setSalt) ||
-                checkAndProcessAction(SettingsActions.LEATHER_ROOFS, data, conf::isLeatherRoofs, conf::setLeatherRoofs);
-
-        if (updated) {
-            Player player = store.getComponent(ref, Player.getComponentType());
-            assert player != null;
-            player.getPageManager().openCustomPage(ref, store, new SettingsUI(playerRef));
+        if (changed) {
+            RecycleMaterials.get().applyConfigChange();
+            UICommandBuilder cmd = new UICommandBuilder();
+            applyState(cmd, config);
+            sendUpdate(cmd, false);
         }
     }
 }
