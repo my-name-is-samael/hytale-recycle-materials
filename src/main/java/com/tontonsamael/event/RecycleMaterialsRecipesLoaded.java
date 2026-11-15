@@ -24,7 +24,7 @@ public class RecycleMaterialsRecipesLoaded {
     private static Field _recipeId;
 
     private static CraftingRecipe generateRecipe(String inputId, String inputResourceId, int inputQuantity, String outputId, int outputQuantity, String category, BenchType benchType, String benchId, float timeSeconds) {
-        BenchRequirement bench = new BenchRequirement(benchType, benchId, new String[]{category}, 0);
+        BenchRequirement bench = new BenchRequirement(benchType, benchId, new String[]{category}, 0, null);
         MaterialQuantity input = new MaterialQuantity(inputId, inputResourceId, null, inputQuantity, null);
         MaterialQuantity output = new MaterialQuantity(outputId, null, null, outputQuantity, null);
         CraftingRecipe recipe = new CraftingRecipe(new MaterialQuantity[]{input}, output, new MaterialQuantity[]{output}, output.getQuantity(), new BenchRequirement[]{bench}, timeSeconds, false, 0);
@@ -42,7 +42,7 @@ public class RecycleMaterialsRecipesLoaded {
     }
 
     private static CraftingRecipe generateRecipe(MaterialQuantity[] inputs, MaterialQuantity[] outputs, String category, BenchType benchType, String benchId, float timeSeconds) {
-        BenchRequirement bench = new BenchRequirement(benchType, benchId, new String[]{category}, 0);
+        BenchRequirement bench = new BenchRequirement(benchType, benchId, new String[]{category}, 0, null);
         CraftingRecipe recipe = new CraftingRecipe(inputs, outputs[0], outputs, outputs[0].getQuantity(), new BenchRequirement[]{bench}, timeSeconds, false, 0);
         try {
             String name = Arrays.stream(inputs).map(MaterialQuantity::getItemId).collect(Collectors.joining("+")) + "-" + Arrays.stream(outputs).map(MaterialQuantity::getItemId).collect(Collectors.joining("+"));
